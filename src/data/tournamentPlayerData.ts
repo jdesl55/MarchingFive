@@ -1827,7 +1827,7 @@ export const TOURNAMENT_PLAYERS: TournamentPlayer[] = [
     "teamFull": "Kansas",
     "espnId": 2305,
     "logoUrl": "https://a.espncdn.com/i/teamlogos/ncaa/500/2305.png",
-    "totalTournamentPts": 104,
+    "totalTournamentPts": 106,
     "keyPerformance": "25 pts vs. Memphis (Title)"
   },
   {
@@ -3554,7 +3554,7 @@ export const TOURNAMENT_PLAYERS: TournamentPlayer[] = [
     "teamFull": "Wisconsin",
     "espnId": 275,
     "logoUrl": "https://a.espncdn.com/i/teamlogos/ncaa/500/275.png",
-    "totalTournamentPts": 125,
+    "totalTournamentPts": 132,
     "keyPerformance": "29 pts vs. Arizona"
   },
   {
@@ -3675,7 +3675,7 @@ export const TOURNAMENT_PLAYERS: TournamentPlayer[] = [
     "teamFull": "Villanova",
     "espnId": 222,
     "logoUrl": "https://a.espncdn.com/i/teamlogos/ncaa/500/222.png",
-    "totalTournamentPts": 76,
+    "totalTournamentPts": 88,
     "keyPerformance": "23 pts vs. Oklahoma (F4)"
   },
   {
@@ -3895,7 +3895,7 @@ export const TOURNAMENT_PLAYERS: TournamentPlayer[] = [
     "teamFull": "North Carolina",
     "espnId": 153,
     "logoUrl": "https://a.espncdn.com/i/teamlogos/ncaa/500/153.png",
-    "totalTournamentPts": 117,
+    "totalTournamentPts": 109,
     "keyPerformance": "24 pts vs. Butler"
   },
   {
@@ -4038,7 +4038,7 @@ export const TOURNAMENT_PLAYERS: TournamentPlayer[] = [
     "teamFull": "Villanova",
     "espnId": 222,
     "logoUrl": "https://a.espncdn.com/i/teamlogos/ncaa/500/222.png",
-    "totalTournamentPts": 97,
+    "totalTournamentPts": 105,
     "keyPerformance": "27 pts vs. West Virginia"
   },
   {
@@ -5446,7 +5446,7 @@ export const TOURNAMENT_PLAYERS: TournamentPlayer[] = [
     "teamFull": "UConn",
     "espnId": 41,
     "logoUrl": "https://a.espncdn.com/i/teamlogos/ncaa/500/41.png",
-    "totalTournamentPts": 105,
+    "totalTournamentPts": 84,
     "keyPerformance": "24 pts vs. (Title Game)"
   },
   {
