@@ -68,6 +68,9 @@ const SPIN_DURATION_MS = 2500;
 const REVEAL_DURATION_MS = 1200;
 const FINAL_PAUSE_MS = 1500;
 const LANDING_TRANSITION_MS = 300;
+const SPINNER_LANDED_FONT_SIZE = 52;
+const SPINNER_OTHER_FONT_SIZE = 18;
+const SPINNER_SPIN_FONT_SIZE = 22;
 
 const REPEATED_YEARS = Array.from({ length: REEL_BLOCKS }, (_, blockIndex) =>
   TOURNAMENT_YEARS.map((year, yearIndex) => ({
@@ -355,11 +358,13 @@ function MarchingFive() {
   const [completionPulse, setCompletionPulse] = useState(false);
   const [reelTransitionMs, setReelTransitionMs] = useState(0);
   const [reelVisualIndex, setReelVisualIndex] = useState(normalizeReelIndex(0));
+  const [reelTranslateX, setReelTranslateX] = useState(0);
 
   const timeoutIdsRef = useRef<number[]>([]);
   const revealFrameRef = useRef<number | null>(null);
   const spinFrameRef = useRef<number | null>(null);
   const reelCenterIndexRef = useRef(normalizeReelIndex(0));
+  const spinnerWindowRef = useRef<HTMLDivElement | null>(null);
 
   const allSlotsFilled = game.slots.every((slot) => slot !== null);
   const scoreTier = getScoreTier(game.actualTotal);
@@ -403,6 +408,7 @@ function MarchingFive() {
     setCompletionPulse(false);
     setReelTransitionMs(0);
     setReelVisualIndex(normalizeReelIndex(0));
+    setReelTranslateX(0);
     reelCenterIndexRef.current = normalizeReelIndex(0);
   }
 
@@ -412,6 +418,21 @@ function MarchingFive() {
       clearFrames();
     };
   }, []);
+
+  useEffect(() => {
+    function syncReelPosition() {
+      const spinnerWidth = spinnerWindowRef.current?.offsetWidth ?? 0;
+      const centeredX = spinnerWidth / 2 - (reelVisualIndex * YEAR_ITEM_WIDTH + YEAR_ITEM_WIDTH / 2);
+      setReelTranslateX(centeredX);
+    }
+
+    syncReelPosition();
+    window.addEventListener('resize', syncReelPosition);
+
+    return () => {
+      window.removeEventListener('resize', syncReelPosition);
+    };
+  }, [reelVisualIndex]);
 
   function handlePlay() {
     if (screenFading) {
@@ -468,21 +489,30 @@ function MarchingFive() {
     setLandedYearPulse(false);
     setReelTransitionMs(0);
     setReelVisualIndex(normalizedCurrent);
+    {
+      const spinnerWidth = spinnerWindowRef.current?.offsetWidth ?? 0;
+      setReelTranslateX(spinnerWidth / 2 - (normalizedCurrent * YEAR_ITEM_WIDTH + YEAR_ITEM_WIDTH / 2));
+    }
     reelCenterIndexRef.current = normalizedCurrent;
     dispatch({ type: 'START_SPIN', year: targetYear });
 
     schedule(() => {
       spinFrameRef.current = window.requestAnimationFrame(() => {
+        const spinnerWidth = spinnerWindowRef.current?.offsetWidth ?? 0;
         setReelTransitionMs(SPIN_DURATION_MS);
         setReelVisualIndex(visualTarget);
+        setReelTranslateX(spinnerWidth / 2 - (visualTarget * YEAR_ITEM_WIDTH + YEAR_ITEM_WIDTH / 2));
       });
     }, 20);
 
     schedule(() => {
       const settledIndex = normalizeReelIndex(targetYearIndex);
+      const spinnerWidth = spinnerWindowRef.current?.offsetWidth ?? 0;
+      const settledTranslateX = spinnerWidth / 2 - (settledIndex * YEAR_ITEM_WIDTH + YEAR_ITEM_WIDTH / 2);
 
       setReelTransitionMs(0);
       setReelVisualIndex(settledIndex);
+      setReelTranslateX(settledTranslateX);
       reelCenterIndexRef.current = settledIndex;
       setLandedYearPulse(true);
       dispatch({ type: 'FINISH_SPIN' });
@@ -853,19 +883,15 @@ function MarchingFive() {
             </div>
 
             <div className="glass-panel spinner-shell px-3 py-2">
-              <div className={`spinner-window ${landedYearPulse ? 'spinner-window--landed' : ''}`}>
-                <div className="pointer-events-none absolute left-1/2 top-0 z-[3] -translate-x-1/2 text-base leading-none text-[var(--basketball-orange)]">
-                  ▼
-                </div>
-                <div className="pointer-events-none absolute bottom-0 left-1/2 z-[3] -translate-x-1/2 text-base leading-none text-[var(--basketball-orange)]">
-                  ▲
-                </div>
+              <div ref={spinnerWindowRef} className={`spinner-window ${landedYearPulse ? 'spinner-window--landed' : ''}`}>
+                <div className="pointer-events-none absolute left-1/2 top-[8px] z-[3] h-[2px] w-10 -translate-x-1/2 rounded-full bg-[rgba(232,93,38,0.4)]" />
+                <div className="pointer-events-none absolute bottom-[8px] left-1/2 z-[3] h-[2px] w-10 -translate-x-1/2 rounded-full bg-[rgba(232,93,38,0.4)]" />
                 <div className="spinner-fade spinner-fade--left" />
                 <div className="spinner-fade spinner-fade--right" />
                 <div
                   className="spinner-strip"
                   style={{
-                    transform: `translateX(calc(50% - ${(reelVisualIndex * YEAR_ITEM_WIDTH) + YEAR_ITEM_WIDTH / 2}px))`,
+                    transform: `translateX(${reelTranslateX}px)`,
                     transitionProperty: 'transform',
                     transitionDuration: `${reelTransitionMs}ms`,
                     transitionTimingFunction: 'cubic-bezier(0.15, 0.85, 0.35, 1)'
@@ -878,38 +904,34 @@ function MarchingFive() {
                       style={{
                         fontSize:
                           reelTransitionMs > 0
-                            ? '1.35rem'
+                            ? `${SPINNER_SPIN_FONT_SIZE}px`
                             : game.currentYear !== null && index === reelVisualIndex
-                              ? '3rem'
-                              : Math.abs(index - reelVisualIndex) === 1
-                                ? '1.2rem'
-                                : '1rem',
+                              ? `${SPINNER_LANDED_FONT_SIZE}px`
+                              : `${SPINNER_OTHER_FONT_SIZE}px`,
                         color:
                           reelTransitionMs > 0
                             ? '#7A7A85'
                             : game.currentYear !== null && index === reelVisualIndex
                               ? '#E85D26'
-                              : '#2A2A30',
+                              : '#1A1A1F',
                         opacity:
                           reelTransitionMs > 0
                             ? 0.7
                             : game.currentYear !== null && index === reelVisualIndex
                               ? 1
-                              : Math.abs(index - reelVisualIndex) === 1
-                                ? 0.18
-                                : 0.06,
+                              : 1,
                         textShadow:
                           reelTransitionMs > 0
                             ? 'none'
                             : game.currentYear !== null && index === reelVisualIndex
-                              ? '0 0 15px rgba(232, 93, 38, 0.7), 0 0 40px rgba(232, 93, 38, 0.4), 0 0 60px rgba(232, 93, 38, 0.2)'
+                              ? '0 0 10px rgba(232, 93, 38, 0.8), 0 0 30px rgba(232, 93, 38, 0.5), 0 0 60px rgba(232, 93, 38, 0.3)'
                               : 'none',
                         transform:
                           game.currentYear !== null && index === reelVisualIndex
                             ? `scale(${landedYearPulse ? 1.2 : 1})`
                             : 'scale(1)',
                         transition:
-                          'transform 400ms ease-out, opacity 120ms ease-out, color 120ms ease-out, font-size 120ms ease-out'
+                          'transform 400ms ease-out, color 120ms ease-out, font-size 120ms ease-out, text-shadow 120ms ease-out'
                       }}
                     >
                       {year}
