@@ -387,7 +387,16 @@ function MarchingFive() {
   }
 
   function handleSelectSlot(slotIndex: number) {
-    if (game.phase !== 'selecting_slot' || game.slots[slotIndex] !== null || game.currentYear === null) {
+    if (
+      (game.phase !== 'selecting_slot' && game.phase !== 'selecting_player') ||
+      game.slots[slotIndex] !== null ||
+      game.currentYear === null
+    ) {
+      return;
+    }
+
+    if (game.phase === 'selecting_player' && game.activeSlotIndex === slotIndex) {
+      handleReturnToSlotSelection();
       return;
     }
 
@@ -435,7 +444,7 @@ function MarchingFive() {
 
       schedule(() => {
         setLandedYearPulse(false);
-      }, 300);
+      }, 400);
     }, SPIN_DURATION_MS + 60);
   }
 
@@ -612,110 +621,153 @@ function MarchingFive() {
         </div>
       </header>
 
-      <section className="relative z-10 mx-auto max-w-[480px] px-4 pb-8 pt-4">
+      <section className="relative z-10 mx-auto max-w-[480px] px-4 pb-6 pt-3">
         {game.phase === 'selecting_slot' ? (
-          <p className="mb-3 text-center text-[13px] text-[var(--text-secondary)]">Pick a position</p>
+          <p className="mb-2 text-center text-[13px] text-[var(--text-secondary)]">Pick a position</p>
         ) : null}
 
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           {SLOT_CONFIG.map((slot, index) => {
             const filledSlot = game.slots[index];
-            const isInteractive = game.phase === 'selecting_slot' && filledSlot === null;
-            const isSelectedForDropdown = game.phase === 'selecting_player' && game.activeSlotIndex === index && !filledSlot;
+            const canBrowsePositions =
+              (game.phase === 'selecting_slot' || game.phase === 'selecting_player') && filledSlot === null;
+            const isSelectedForDropdown = game.activeSlotIndex === index && game.phase === 'selecting_player' && !filledSlot;
             const logoUrl = filledSlot ? getLogoUrl(filledSlot.player) : null;
             const points = filledSlot ? displayedSlotPoints[index] : 0;
+            const showDropdown = isSelectedForDropdown;
 
             return (
-              <button
-                key={`${slot.short}-${index}`}
-                type="button"
-                onClick={() => handleSelectSlot(index)}
-                disabled={!isInteractive}
-                className={`glass-panel slot-card flex min-h-[58px] w-full items-center px-3 py-2 text-left ${
-                  isSelectedForDropdown ? 'slot-card--active' : ''
-                } ${filledSlot ? 'slot-card--filled' : ''} ${
-                  revealingSlotIndex === index ? 'slot-card--revealing' : ''
-                } ${!isInteractive ? 'cursor-default' : 'cursor-pointer'}`}
-                style={
-                  isInteractive
-                    ? {
-                        borderColor: 'rgba(232, 93, 38, 0.35)',
-                        boxShadow: '0 0 14px rgba(232, 93, 38, 0.12)'
-                      }
-                    : undefined
-                }
-              >
-                {!filledSlot ? (
-                  <>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <span
-                          className="font-display shrink-0 text-[1.6rem] leading-none"
-                          style={{ color: isInteractive ? 'var(--basketball-orange)' : 'var(--text-dim)' }}
+              <div key={`${slot.short}-${index}`} className="space-y-1.5">
+                <button
+                  type="button"
+                  onClick={() => handleSelectSlot(index)}
+                  disabled={!canBrowsePositions}
+                  className={`glass-panel slot-card flex min-h-[54px] w-full items-center px-3 py-1.5 text-left ${
+                    isSelectedForDropdown ? 'slot-card--active' : ''
+                  } ${filledSlot ? 'slot-card--filled' : ''} ${
+                    revealingSlotIndex === index ? 'slot-card--revealing' : ''
+                  } ${!canBrowsePositions ? 'cursor-default' : 'cursor-pointer'}`}
+                  style={
+                    canBrowsePositions
+                      ? isSelectedForDropdown
+                        ? {
+                            borderColor: 'rgba(232, 93, 38, 0.5)',
+                            boxShadow: '0 0 16px rgba(232, 93, 38, 0.16)'
+                          }
+                        : {
+                            borderColor: 'rgba(232, 93, 38, 0.2)',
+                            boxShadow: '0 0 10px rgba(232, 93, 38, 0.08)'
+                          }
+                      : undefined
+                  }
+                >
+                  {!filledSlot ? (
+                    <>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <span
+                            className="font-display shrink-0 text-[1.55rem] leading-none"
+                            style={{ color: canBrowsePositions || isSelectedForDropdown ? 'var(--basketball-orange)' : 'var(--text-dim)' }}
+                          >
+                            {slot.short}
+                          </span>
+                          <span className="text-[13px] text-[var(--text-secondary)]">- {slot.long}</span>
+                        </div>
+                        <div className="mt-0.5 text-[10px] italic text-[var(--text-dim)]">— empty —</div>
+                      </div>
+                      {game.phase === 'idle' ? (
+                        <div className="ml-2 shrink-0 text-[9px] uppercase tracking-[0.16em] text-[var(--text-dim)]">
+                          Spin first
+                        </div>
+                      ) : null}
+                      {canBrowsePositions && !isSelectedForDropdown ? (
+                        <div className="ml-2 shrink-0 rounded-full border border-[rgba(232,93,38,0.2)] px-2 py-1 text-[9px] uppercase tracking-[0.16em] text-[var(--basketball-orange)]">
+                          Pick
+                        </div>
+                      ) : null}
+                      {isSelectedForDropdown ? (
+                        <div className="ml-2 shrink-0 rounded-full bg-[rgba(232,93,38,0.12)] px-2 py-1 text-[9px] uppercase tracking-[0.16em] text-[var(--basketball-orange)]">
+                          Active
+                        </div>
+                      ) : null}
+                    </>
+                  ) : (
+                    <>
+                      <div className="mr-3 flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-[rgba(255,255,255,0.05)]">
+                        {logoUrl ? (
+                          <img src={logoUrl} alt={filledSlot.player.teamFull} className="h-9 w-9 object-contain" />
+                        ) : (
+                          <span className="font-display text-xl text-[var(--text-secondary)]">{slot.short}</span>
+                        )}
+                      </div>
+
+                      <div className="min-w-0 flex-1">
+                        <div className="mb-0.5 flex items-center gap-2">
+                          <span className="font-display text-lg leading-none text-[var(--text-secondary)]">{slot.short}</span>
+                          <span className="rounded-full bg-[var(--bg-surface-hover)] px-2 py-0.5 text-[10px] font-medium text-[var(--text-secondary)]">
+                            {filledSlot.year}
+                          </span>
+                        </div>
+                        <div className="truncate text-[14px] font-bold text-[var(--text-primary)]">
+                          {filledSlot.player.playerName}
+                        </div>
+                        <div className="truncate text-[11px] text-[var(--text-secondary)]">{filledSlot.player.teamFull}</div>
+                      </div>
+
+                      <div className="ml-3 shrink-0 text-right">
+                        <div
+                          className={`font-display text-[1.6rem] leading-none text-[var(--basketball-orange)] ${
+                            revealingSlotIndex === index ? 'pulse-scale' : ''
+                          }`}
                         >
-                          {slot.short}
-                        </span>
-                        <span className="text-[13px] text-[var(--text-secondary)]">- {slot.long}</span>
+                          {points}
+                        </div>
+                        <div className="text-[10px] uppercase tracking-[0.2em] text-[var(--text-secondary)]">pts</div>
                       </div>
-                      <div className="mt-0.5 text-[11px] italic text-[var(--text-dim)]">— empty —</div>
-                    </div>
-                    {game.phase === 'idle' ? (
-                      <div className="ml-3 shrink-0 text-[10px] uppercase tracking-[0.16em] text-[var(--text-dim)]">
-                        Spin first
-                      </div>
-                    ) : null}
-                    {isInteractive ? (
-                      <div className="ml-3 shrink-0 rounded-full border border-[var(--glass-border-active)] px-2 py-1 text-[10px] uppercase tracking-[0.16em] text-[var(--basketball-orange)]">
-                        Pick
-                      </div>
-                    ) : null}
-                    {isSelectedForDropdown ? (
-                      <div className="ml-3 shrink-0 rounded-full bg-[rgba(232,93,38,0.12)] px-2 py-1 text-[10px] uppercase tracking-[0.16em] text-[var(--basketball-orange)]">
-                        Active
-                      </div>
-                    ) : null}
-                  </>
-                ) : (
-                  <>
-                    <div className="mr-3 flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-[rgba(255,255,255,0.05)]">
-                      {logoUrl ? (
-                        <img src={logoUrl} alt={filledSlot.player.teamFull} className="h-9 w-9 object-contain" />
-                      ) : (
-                        <span className="font-display text-xl text-[var(--text-secondary)]">{slot.short}</span>
-                      )}
-                    </div>
+                    </>
+                  )}
+                </button>
 
-                    <div className="min-w-0 flex-1">
-                      <div className="mb-0.5 flex items-center gap-2">
-                        <span className="font-display text-lg leading-none text-[var(--text-secondary)]">{slot.short}</span>
-                        <span className="rounded-full bg-[var(--bg-surface-hover)] px-2 py-0.5 text-[10px] font-medium text-[var(--text-secondary)]">
-                          {filledSlot.year}
-                        </span>
+                {showDropdown ? (
+                  <div className="dropdown-shell glass-panel overflow-hidden">
+                    {selectionOptions.length === 0 ? (
+                      <div className="px-4 py-4 text-sm text-[var(--text-secondary)]">
+                        <p>No eligible players were found for this draw.</p>
+                        <button
+                          type="button"
+                          onClick={handleReturnToSlotSelection}
+                          className="spin-button font-display mt-3 rounded-full px-5 py-2 text-lg uppercase tracking-[0.12em]"
+                        >
+                          Choose Position
+                        </button>
                       </div>
-                      <div className="truncate text-[14px] font-bold text-[var(--text-primary)]">
-                        {filledSlot.player.playerName}
-                      </div>
-                      <div className="truncate text-[11px] text-[var(--text-secondary)]">{filledSlot.player.teamFull}</div>
-                    </div>
-
-                    <div className="ml-3 shrink-0 text-right">
-                      <div
-                        className={`font-display text-[1.65rem] leading-none text-[var(--basketball-orange)] ${
-                          revealingSlotIndex === index ? 'pulse-scale' : ''
-                        }`}
-                      >
-                        {points}
-                      </div>
-                      <div className="text-[10px] uppercase tracking-[0.2em] text-[var(--text-secondary)]">pts</div>
-                    </div>
-                  </>
-                )}
-              </button>
+                    ) : (
+                      selectionOptions.map((player, optionIndex) => (
+                        <button
+                          key={getPlayerKey(player)}
+                          type="button"
+                          onClick={() => handleSelectPlayer(player)}
+                          className={`dropdown-option flex min-h-[48px] w-full items-center justify-between border-l-2 border-l-transparent px-4 py-2.5 text-left ${
+                            optionIndex < selectionOptions.length - 1 ? 'border-b border-b-[var(--glass-border)]' : ''
+                          }`}
+                        >
+                          <div className="min-w-0">
+                            <div className="truncate text-[15px] font-bold text-[var(--text-primary)]">
+                              {player.playerName}
+                            </div>
+                            <div className="truncate text-xs text-[var(--text-secondary)]">{player.teamFull}</div>
+                          </div>
+                        </button>
+                      ))
+                    )}
+                  </div>
+                ) : null}
+              </div>
             );
           })}
         </div>
 
-        <div className="mt-5 text-center">
+        <div className="mt-4 text-center">
           <div className="text-[11px] uppercase tracking-[0.35em] text-[var(--text-secondary)]">Total</div>
           <div
             className={`font-display relative mt-1 inline-block text-[3rem] leading-none text-[var(--basketball-orange)] ${
@@ -727,21 +779,21 @@ function MarchingFive() {
           </div>
 
           {game.phase === 'complete' && showFinalBadge ? (
-            <div className="fade-enter mt-4">
+            <div className="fade-enter mt-3">
               <div
                 className={`tier-badge glass-panel inline-flex min-h-10 items-center rounded-full px-5 py-2 font-display text-xl uppercase tracking-[0.16em] ${scoreTier.className}`}
                 style={{ color: scoreTier.textColor }}
               >
                 {scoreTier.label}
               </div>
-              <p className="mt-3 text-sm text-[var(--text-secondary)]">
+              <p className="mt-2 text-sm text-[var(--text-secondary)]">
                 Best possible with your years: {bestPossibleScore}
               </p>
               {showPlayAgain ? (
                 <button
                   type="button"
                   onClick={handlePlayAgain}
-                  className="spin-button font-display mt-5 min-h-[48px] rounded-full px-8 py-2.5 text-[1.35rem] uppercase tracking-[0.14em]"
+                  className="spin-button font-display mt-4 min-h-[48px] rounded-full px-8 py-2.5 text-[1.35rem] uppercase tracking-[0.14em]"
                 >
                   Play Again
                 </button>
@@ -751,15 +803,19 @@ function MarchingFive() {
         </div>
 
         {!allSlotsFilled ? (
-          <div className="mt-5 space-y-3">
+          <div className="mt-4 space-y-2.5">
             <div className="text-center">
               <div className="text-[11px] uppercase tracking-[0.35em] text-[var(--text-secondary)]">Year Spinner</div>
             </div>
 
-            <div className="glass-panel spinner-shell px-3 py-2.5">
+            <div className="glass-panel spinner-shell px-3 py-2">
               <div className={`spinner-window ${landedYearPulse ? 'spinner-window--landed' : ''}`}>
-                <div className="pointer-events-none absolute left-1/2 top-1 z-[3] h-1 w-8 -translate-x-1/2 rounded-full bg-[var(--basketball-orange)] shadow-[0_0_18px_rgba(232,93,38,0.45)]" />
-                <div className="pointer-events-none absolute bottom-1 left-1/2 z-[3] h-1 w-8 -translate-x-1/2 rounded-full bg-[var(--basketball-orange)] shadow-[0_0_18px_rgba(232,93,38,0.45)]" />
+                <div className="pointer-events-none absolute left-1/2 top-0 z-[3] -translate-x-1/2 text-base leading-none text-[var(--basketball-orange)]">
+                  ▼
+                </div>
+                <div className="pointer-events-none absolute bottom-0 left-1/2 z-[3] -translate-x-1/2 text-base leading-none text-[var(--basketball-orange)]">
+                  ▲
+                </div>
                 <div className="spinner-fade spinner-fade--left" />
                 <div className="spinner-fade spinner-fade--right" />
                 <div
@@ -777,31 +833,39 @@ function MarchingFive() {
                       className="spinner-year"
                       style={{
                         fontSize:
-                          reelTransitionMs === 0 && index === reelVisualIndex
-                            ? '3.1rem'
-                            : Math.abs(index - reelVisualIndex) === 1
-                              ? '1.8rem'
-                              : '1.35rem',
+                          reelTransitionMs > 0
+                            ? '1.35rem'
+                            : game.currentYear !== null && index === reelVisualIndex
+                              ? '3rem'
+                              : Math.abs(index - reelVisualIndex) === 1
+                                ? '1.2rem'
+                                : '1rem',
                         color:
-                          reelTransitionMs === 0 && index === reelVisualIndex
-                            ? '#E85D26'
-                            : 'rgba(74, 74, 82, 0.92)',
+                          reelTransitionMs > 0
+                            ? '#7A7A85'
+                            : game.currentYear !== null && index === reelVisualIndex
+                              ? '#E85D26'
+                              : '#2A2A30',
                         opacity:
-                          reelTransitionMs === 0 && index === reelVisualIndex
-                            ? 1
-                            : Math.abs(index - reelVisualIndex) === 1
-                              ? 0.42
-                              : 0.15,
+                          reelTransitionMs > 0
+                            ? 0.7
+                            : game.currentYear !== null && index === reelVisualIndex
+                              ? 1
+                              : Math.abs(index - reelVisualIndex) === 1
+                                ? 0.18
+                                : 0.06,
                         textShadow:
-                          reelTransitionMs === 0 && index === reelVisualIndex
-                            ? '0 0 20px rgba(232, 93, 38, 0.6), 0 0 40px rgba(232, 93, 38, 0.3)'
-                            : 'none',
+                          reelTransitionMs > 0
+                            ? 'none'
+                            : game.currentYear !== null && index === reelVisualIndex
+                              ? '0 0 15px rgba(232, 93, 38, 0.7), 0 0 40px rgba(232, 93, 38, 0.4), 0 0 60px rgba(232, 93, 38, 0.2)'
+                              : 'none',
                         transform:
-                          reelTransitionMs === 0 && index === reelVisualIndex
-                            ? `scale(${landedYearPulse ? 1.15 : 1})`
+                          game.currentYear !== null && index === reelVisualIndex
+                            ? `scale(${landedYearPulse ? 1.2 : 1})`
                             : 'scale(1)',
                         transition:
-                          'transform 300ms ease-out, opacity 120ms ease-out, color 120ms ease-out, font-size 120ms ease-out'
+                          'transform 400ms ease-out, opacity 120ms ease-out, color 120ms ease-out, font-size 120ms ease-out'
                       }}
                     >
                       {year}
@@ -810,41 +874,6 @@ function MarchingFive() {
                 </div>
               </div>
             </div>
-
-            {game.phase === 'selecting_player' ? (
-              <div className="dropdown-shell glass-panel overflow-hidden">
-                {selectionOptions.length === 0 ? (
-                  <div className="px-4 py-5 text-sm text-[var(--text-secondary)]">
-                    <p>No eligible players were found for this draw.</p>
-                    <button
-                      type="button"
-                      onClick={handleReturnToSlotSelection}
-                      className="spin-button font-display mt-4 rounded-full px-5 py-2 text-lg uppercase tracking-[0.12em]"
-                    >
-                      Choose Position
-                    </button>
-                  </div>
-                ) : (
-                  selectionOptions.map((player, index) => (
-                    <button
-                      key={getPlayerKey(player)}
-                      type="button"
-                      onClick={() => handleSelectPlayer(player)}
-                      className={`dropdown-option flex min-h-[56px] w-full items-center justify-between border-l-2 border-l-transparent px-4 py-3 text-left ${
-                        index < selectionOptions.length - 1 ? 'border-b border-b-[var(--glass-border)]' : ''
-                      }`}
-                    >
-                      <div className="min-w-0">
-                        <div className="truncate text-[15px] font-bold text-[var(--text-primary)]">
-                          {player.playerName}
-                        </div>
-                        <div className="truncate text-xs text-[var(--text-secondary)]">{player.teamFull}</div>
-                      </div>
-                    </button>
-                  ))
-                )}
-              </div>
-            ) : null}
 
             {game.phase === 'idle' || game.phase === 'spinning' ? (
               <div className="flex justify-center">
