@@ -55,6 +55,12 @@ const SLOT_CONFIG = [
   { short: 'C', long: 'Center', position: 'Center' as const }
 ];
 
+const LATTICE_LOGO_IDS = [
+  150, 153, 96, 2305, 222, 127, 2250, 12, 41, 57, 150, 239, 201, 97, 183, 130, 194, 221, 248, 258, 2086, 2166,
+  2244, 252, 2670, 21, 269, 156, 2509, 152, 333, 251, 99, 59, 84, 238, 2752, 46, 235, 198, 2241, 93, 2229, 164,
+  2641, 2633, 30, 26, 275, 66
+];
+
 const YEAR_ITEM_WIDTH = 72;
 const REEL_BLOCKS = 7;
 const REEL_BASE_BLOCK = Math.floor(REEL_BLOCKS / 2);
@@ -295,6 +301,45 @@ function getLogoUrl(player: TournamentPlayer): string | null {
   }
 
   return null;
+}
+
+function LogoLatticeBackdrop() {
+  const rows = Array.from({ length: 14 }, (_, rowIndex) => rowIndex);
+  const columns = Array.from({ length: 12 }, (_, columnIndex) => columnIndex);
+
+  return (
+    <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
+      {rows.map((rowIndex) => (
+        <div
+          key={`lattice-row-${rowIndex}`}
+          className="absolute left-[-72px] right-[-72px] flex"
+          style={{
+            top: `${rowIndex * 86}px`,
+            gap: '44px',
+            transform: `translateX(${rowIndex % 2 === 0 ? 0 : 44}px)`
+          }}
+        >
+          {columns.map((columnIndex) => {
+            const logoId = LATTICE_LOGO_IDS[(rowIndex * columns.length + columnIndex) % LATTICE_LOGO_IDS.length];
+
+            return (
+              <img
+                key={`lattice-logo-${rowIndex}-${columnIndex}-${logoId}`}
+                src={`https://a.espncdn.com/i/teamlogos/ncaa/500/${logoId}.png`}
+                alt=""
+                loading="lazy"
+                className="h-11 w-11 shrink-0 select-none"
+                style={{
+                  opacity: 0.035,
+                  filter: 'grayscale(100%)'
+                }}
+              />
+            );
+          })}
+        </div>
+      ))}
+    </div>
+  );
 }
 
 function MarchingFive() {
@@ -566,11 +611,9 @@ function MarchingFive() {
           screenFading ? 'opacity-0' : 'opacity-100'
         }`}
       >
+        <LogoLatticeBackdrop />
         <div className="court-lines" />
         <div className="relative z-10 mx-auto flex max-w-xl flex-col items-center text-center">
-          <span className="mb-3 rounded-full border border-[var(--glass-border)] bg-[rgba(255,255,255,0.03)] px-4 py-1 text-[11px] uppercase tracking-[0.3em] text-[var(--text-secondary)]">
-            Slot Machine Basketball
-          </span>
           <h1
             className="font-display text-[clamp(3.25rem,10vw,4.5rem)] uppercase leading-none tracking-[0.04em] text-[var(--basketball-orange)]"
             style={{ textShadow: '0 0 40px rgba(232, 93, 38, 0.3)' }}
@@ -594,6 +637,7 @@ function MarchingFive() {
 
   return (
     <main className="game-shell">
+      <LogoLatticeBackdrop />
       <div className="court-lines" />
 
       <header className="glass-panel sticky top-0 z-20 rounded-none border-x-0 border-t-0">
