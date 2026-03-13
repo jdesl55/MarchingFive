@@ -1,0 +1,411 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-deep: #0c0c0e;
+  --bg-surface: #1a1a1f;
+  --bg-surface-hover: #242429;
+  --basketball-orange: #e85d26;
+  --basketball-orange-glow: rgba(232, 93, 38, 0.3);
+  --basketball-orange-dim: #c44d1e;
+  --gold-jackpot: #f5c842;
+  --gold-jackpot-glow: rgba(245, 200, 66, 0.25);
+  --text-primary: #f0f0f0;
+  --text-secondary: #7a7a85;
+  --text-dim: #4a4a52;
+  --glass-border: rgba(240, 240, 240, 0.08);
+  --glass-border-active: rgba(232, 93, 38, 0.4);
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Manrope', sans-serif;
+  color: var(--text-primary);
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(232, 93, 38, 0.06) 0%, transparent 70%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 30%),
+    var(--bg-deep);
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image:
+    linear-gradient(90deg, transparent 0, rgba(255, 255, 255, 0.6) 50%, transparent 100%),
+    linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 220px 100%, 100% 12px;
+  mix-blend-mode: soft-light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+.game-shell {
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.court-lines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.04) 49.5%, transparent 50.5%, transparent 100%),
+    radial-gradient(circle at 50% 28%, rgba(232, 93, 38, 0.08), transparent 38%);
+  opacity: 0.5;
+}
+
+.glass-panel {
+  background: rgba(26, 26, 31, 0.85);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  backdrop-filter: blur(12px);
+}
+
+.soft-orange-glow {
+  box-shadow: 0 0 30px rgba(232, 93, 38, 0.2);
+}
+
+.slot-card {
+  position: relative;
+  overflow: hidden;
+  transition:
+    background-color 150ms ease-out,
+    border-color 150ms ease-out,
+    box-shadow 150ms ease-out,
+    transform 150ms ease-out;
+}
+
+.slot-card:hover {
+  background: rgba(36, 36, 41, 0.95);
+}
+
+.slot-card--active {
+  border-width: 2px;
+  border-color: rgba(232, 93, 38, 0.4);
+  animation: breathing-glow 2s ease-in-out infinite;
+}
+
+.slot-card--filled {
+  box-shadow: 0 0 15px rgba(232, 93, 38, 0.08);
+}
+
+.slot-card--revealing {
+  animation: slot-settle 300ms ease-out;
+}
+
+.spin-button {
+  background: var(--basketball-orange);
+  color: var(--bg-deep);
+  box-shadow: 0 0 15px rgba(232, 93, 38, 0.15);
+  animation: spin-button-pulse 2s ease-in-out infinite;
+  transition: transform 120ms ease-out, box-shadow 120ms ease-out, background-color 120ms ease-out;
+}
+
+.spin-button:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 30px rgba(232, 93, 38, 0.3);
+}
+
+.spin-button:active {
+  transform: scale(0.98);
+}
+
+.spin-button--disabled {
+  background: var(--basketball-orange-dim);
+  box-shadow: none;
+  animation: none;
+  cursor: not-allowed;
+}
+
+.spinner-shell {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0)),
+    rgba(26, 26, 31, 0.9);
+}
+
+.spinner-shell::before {
+  content: '';
+  position: absolute;
+  inset: 50% 16px auto;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(232, 93, 38, 0.25), transparent);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.spinner-window {
+  position: relative;
+  height: 88px;
+  overflow: hidden;
+}
+
+.spinner-window::before,
+.spinner-window::after {
+  content: '';
+  position: absolute;
+  top: 12px;
+  bottom: 12px;
+  width: 2px;
+  border-radius: 999px;
+  background: rgba(232, 93, 38, 0.85);
+  box-shadow: 0 0 18px rgba(232, 93, 38, 0.35);
+  z-index: 2;
+}
+
+.spinner-window::before {
+  left: calc(50% - 40px);
+}
+
+.spinner-window::after {
+  right: calc(50% - 40px);
+}
+
+.spinner-window--landed {
+  animation: spinner-flash 300ms ease-out;
+}
+
+.spinner-strip {
+  position: absolute;
+  inset: 0 auto 0 0;
+  display: flex;
+  align-items: center;
+  will-change: transform;
+}
+
+.spinner-year {
+  width: 72px;
+  flex: 0 0 72px;
+  text-align: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2rem;
+  color: rgba(74, 74, 82, 0.7);
+  letter-spacing: 0.04em;
+  transition: color 120ms ease-out, opacity 120ms ease-out, transform 120ms ease-out;
+}
+
+.spinner-year--active {
+  color: var(--basketball-orange);
+  text-shadow: 0 0 24px rgba(232, 93, 38, 0.4);
+  transform: scale(1.08);
+}
+
+.spinner-fade {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 96px;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.spinner-fade--left {
+  left: 0;
+  background: linear-gradient(90deg, rgba(12, 12, 14, 1), rgba(12, 12, 14, 0));
+}
+
+.spinner-fade--right {
+  right: 0;
+  background: linear-gradient(270deg, rgba(12, 12, 14, 1), rgba(12, 12, 14, 0));
+}
+
+.dropdown-shell {
+  animation: dropdown-in 200ms ease-out;
+}
+
+.dropdown-option {
+  transition: background-color 120ms linear, border-color 120ms linear, transform 120ms ease-out;
+}
+
+.dropdown-option:hover {
+  background: rgba(36, 36, 41, 0.95);
+  border-left-color: var(--basketball-orange);
+}
+
+.dropdown-option:active {
+  transform: scale(0.995);
+  background: rgba(232, 93, 38, 0.1);
+}
+
+.score-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.score-shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 0%, rgba(245, 200, 66, 0.08) 40%, rgba(245, 200, 66, 0.45) 50%, transparent 60%);
+  transform: translateX(-140%);
+  animation: gold-sweep 1s ease-out 1;
+}
+
+.tier-badge {
+  animation: badge-in 300ms ease-out both;
+}
+
+.tier-badge--legendary {
+  box-shadow: 0 0 28px rgba(245, 200, 66, 0.18);
+}
+
+.fade-enter {
+  animation: fade-in 300ms ease both;
+}
+
+.pulse-scale {
+  animation: total-celebration 500ms ease-out;
+}
+
+.high-score-flash {
+  animation: high-score-pop 400ms ease-out;
+}
+
+@keyframes breathing-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 12px rgba(232, 93, 38, 0.1);
+  }
+
+  50% {
+    box-shadow: 0 0 20px rgba(232, 93, 38, 0.25);
+  }
+}
+
+@keyframes spin-button-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 15px rgba(232, 93, 38, 0.15);
+  }
+
+  50% {
+    box-shadow: 0 0 30px rgba(232, 93, 38, 0.3);
+  }
+}
+
+@keyframes dropdown-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes badge-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes slot-settle {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spinner-flash {
+  0% {
+    box-shadow: inset 0 0 0 rgba(232, 93, 38, 0);
+  }
+
+  50% {
+    box-shadow: inset 0 0 40px rgba(232, 93, 38, 0.18);
+  }
+
+  100% {
+    box-shadow: inset 0 0 0 rgba(232, 93, 38, 0);
+  }
+}
+
+@keyframes total-celebration {
+  0% {
+    transform: scale(1);
+    text-shadow: 0 0 20px rgba(232, 93, 38, 0.2);
+  }
+
+  50% {
+    transform: scale(1.15);
+    text-shadow: 0 0 32px rgba(232, 93, 38, 0.35);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes high-score-pop {
+  0% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+
+  40% {
+    opacity: 1;
+    transform: scale(1.1);
+    text-shadow: 0 0 22px rgba(245, 200, 66, 0.4);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes gold-sweep {
+  from {
+    transform: translateX(-140%);
+  }
+
+  to {
+    transform: translateX(140%);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
