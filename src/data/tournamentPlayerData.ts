@@ -1926,7 +1926,7 @@ export const TOURNAMENT_PLAYERS: TournamentPlayer[] = [
     "teamFull": "North Carolina",
     "espnId": 153,
     "logoUrl": "https://a.espncdn.com/i/teamlogos/ncaa/500/153.png",
-    "totalTournamentPts": 104,
+    "totalTournamentPts": 106,
     "keyPerformance": "28 pts vs. Louisville"
   },
   {
