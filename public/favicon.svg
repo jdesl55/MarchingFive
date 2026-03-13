@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="MarchingFive favicon">
+  <rect width="256" height="256" rx="30" fill="#0C0C0E"/>
+  <path
+    d="M44 42h28l26 73 26-73h28v172h-24V100l-23 64H91L68 100v114H44V42Z"
+    fill="#E85D26"
+  />
+  <path
+    d="M162 48h48v22h-28l-3 37c5-4 10-6 17-6 18 0 31 14 31 37 0 26-16 44-42 44-17 0-31-7-40-20l17-15c6 8 13 12 22 12 11 0 19-9 19-21 0-13-7-21-18-21-7 0-12 2-17 6l-14-8 8-67Z"
+    fill="#F5C842"
+  />
+</svg>

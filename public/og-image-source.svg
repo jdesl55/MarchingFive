@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <radialGradient id="bgGlow" cx="50%" cy="32%" r="68%">
+      <stop offset="0%" stop-color="rgba(232,93,38,0.10)"/>
+      <stop offset="60%" stop-color="rgba(232,93,38,0.03)"/>
+      <stop offset="100%" stop-color="rgba(12,12,14,0)"/>
+    </radialGradient>
+    <filter id="orangeGlow" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#E85D26" flood-opacity="0.45"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="18" flood-color="#E85D26" flood-opacity="0.18"/>
+    </filter>
+    <style>
+      .title {
+        font-family: "Bebas Neue", Impact, "Arial Narrow", sans-serif;
+        font-size: 84px;
+        letter-spacing: 2px;
+        fill: #E85D26;
+      }
+      .subtitle {
+        font-family: Manrope, "Helvetica Neue", Arial, sans-serif;
+        font-size: 22px;
+        font-weight: 600;
+        fill: #F0F0F0;
+      }
+      .domain {
+        font-family: Manrope, "Helvetica Neue", Arial, sans-serif;
+        font-size: 16px;
+        font-weight: 500;
+        letter-spacing: 1px;
+        fill: #7A7A85;
+      }
+      .slot-label {
+        font-family: "Bebas Neue", Impact, "Arial Narrow", sans-serif;
+        font-size: 24px;
+        letter-spacing: 1px;
+        fill: #F0F0F0;
+      }
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="#0C0C0E"/>
+  <rect width="1200" height="630" fill="url(#bgGlow)"/>
+
+  <g opacity="0.04">
+    <g filter="grayscale(1)">
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/150.png" x="32" y="36" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/153.png" x="132" y="36" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/96.png" x="232" y="36" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/2305.png" x="332" y="36" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/222.png" x="432" y="36" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/127.png" x="532" y="36" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/2250.png" x="632" y="36" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/12.png" x="732" y="36" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/41.png" x="832" y="36" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/57.png" x="932" y="36" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/239.png" x="1032" y="36" width="42" height="42"/>
+
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/201.png" x="82" y="126" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/97.png" x="182" y="126" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/183.png" x="282" y="126" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/130.png" x="382" y="126" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/194.png" x="482" y="126" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/221.png" x="582" y="126" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/248.png" x="682" y="126" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/258.png" x="782" y="126" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/2086.png" x="882" y="126" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/2166.png" x="982" y="126" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/2244.png" x="1082" y="126" width="42" height="42"/>
+
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/252.png" x="32" y="216" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/2670.png" x="132" y="216" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/21.png" x="232" y="216" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/269.png" x="332" y="216" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/156.png" x="432" y="216" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/2509.png" x="532" y="216" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/152.png" x="632" y="216" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/333.png" x="732" y="216" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/251.png" x="832" y="216" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/99.png" x="932" y="216" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/84.png" x="1032" y="216" width="42" height="42"/>
+
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/238.png" x="82" y="306" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/2752.png" x="182" y="306" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/46.png" x="282" y="306" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/235.png" x="382" y="306" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/198.png" x="482" y="306" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/2241.png" x="582" y="306" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/93.png" x="682" y="306" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/2229.png" x="782" y="306" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/164.png" x="882" y="306" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/2641.png" x="982" y="306" width="42" height="42"/>
+      <image href="https://a.espncdn.com/i/teamlogos/ncaa/500/2633.png" x="1082" y="306" width="42" height="42"/>
+    </g>
+  </g>
+
+  <g transform="translate(600 214)">
+    <text class="title" text-anchor="middle" filter="url(#orangeGlow)">MarchingFive</text>
+    <text class="subtitle" x="0" y="54" text-anchor="middle">Spin the year. Pick your player. Chase the high score.</text>
+  </g>
+
+  <g transform="translate(315 345)">
+    <rect x="0" y="0" width="102" height="74" rx="16" fill="rgba(26,26,31,0.75)" stroke="rgba(232,93,38,0.55)" stroke-width="2"/>
+    <rect x="118" y="0" width="102" height="74" rx="16" fill="rgba(26,26,31,0.75)" stroke="rgba(232,93,38,0.55)" stroke-width="2"/>
+    <rect x="236" y="0" width="102" height="74" rx="16" fill="rgba(26,26,31,0.75)" stroke="rgba(232,93,38,0.55)" stroke-width="2"/>
+    <rect x="354" y="0" width="102" height="74" rx="16" fill="rgba(26,26,31,0.75)" stroke="rgba(232,93,38,0.55)" stroke-width="2"/>
+    <rect x="472" y="0" width="102" height="74" rx="16" fill="rgba(26,26,31,0.75)" stroke="rgba(232,93,38,0.55)" stroke-width="2"/>
+
+    <text class="slot-label" x="51" y="43" text-anchor="middle">PG</text>
+    <text class="slot-label" x="169" y="43" text-anchor="middle">SG</text>
+    <text class="slot-label" x="287" y="43" text-anchor="middle">F</text>
+    <text class="slot-label" x="405" y="43" text-anchor="middle">F</text>
+    <text class="slot-label" x="523" y="43" text-anchor="middle">C</text>
+  </g>
+
+  <text class="domain" x="600" y="592" text-anchor="middle">marchingfive.com</text>
+</svg>
